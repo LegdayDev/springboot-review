@@ -6,15 +6,47 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Shop List</title>
   <link href="/css/main.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+          crossorigin="anonymous"></script>
 </head>
 <body>
+<div th:replace="~{nav.html::navbar}"></div>
 <div class="card" th:each="item: ${items}">
-  <img src="https://placehold.co/300">
-  <div>
-    <h4 th:text="${item.getTitle()}">바지</h4>
-    <p th:text="${item.getPrice()}">7억</p>
-  </div>
+  <a th:href="@{|/detail/${item.getId()}|}">
+    <img src="https://placehold.co/300">
+  </a>
+    <div>
+      <div>
+        <h4 th:text="${item.getTitle()}">바지</h4>
+        <p th:text="${item.getPrice()}">7억</p>
+      </div>
+      <button class="btn-update" th:onclick="|updateForm(${item.getId()})|">수정</button>
+      <button class="btn-delete" th:data="${item.getTitle()}" th:onclick="|deleteById(${item.getId()}, this)|">삭제</button>
+    </div>
 </div>
 
+<script>
+  function updateForm(id) {
+    window.location.assign(`/update/${id}`);
+  }
+
+  function deleteById(id,button) {
+    let title = button.getAttribute('data');
+    if (confirm(`상품 ${title} 을(를) 삭제 하시겠습니까?`)) {
+      $.ajax({
+        url: `/delete/${id}`,
+        type: 'delete',
+        dataType: 'text'
+      }).done(res => {
+        console.log('삭제 성공', res);
+        window.location.replace(`/list`);
+      }).fail(err => {
+        console.log('삭제실패', err);
+      });
+    } else {
+      alert("삭제가 취소되었습니다!");
+    }
+  }
+</script>
 </body>
 </html>

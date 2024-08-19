@@ -9,10 +9,6 @@ import java.time.LocalDateTime;
 @Controller
 public class BasicController {
 
-    @GetMapping("/")
-    public String index(){
-        return "index.html";
-    }
 
     @GetMapping("/about")
     @ResponseBody
